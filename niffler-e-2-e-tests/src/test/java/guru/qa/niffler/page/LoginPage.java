@@ -4,13 +4,14 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$x;
 
 public class LoginPage {
-  private final SelenideElement usernameInput = $("input[name='username']");
-  private final SelenideElement passwordInput = $("input[name='password']");
-  private final SelenideElement submitButton = $("button[type='submit']");
-  private final SelenideElement createNewAccountBtn = $("a[href='/register']");
-  private final SelenideElement error = $("*[class='form__error']");
+  private final SelenideElement usernameInput = $x("//input[@name='username']");
+  private final SelenideElement passwordInput = $x("//input[@name='password']");
+  private final SelenideElement submitButton = $x("//button[@type='submit']");
+  private final SelenideElement createNewAccountBtn = $x("//a[@class='form__register']");
+  private final SelenideElement error = $x("//p[@class='form__error']");
 
   public LoginPage login(String username, String password) {
     usernameInput.setValue(username);
@@ -27,7 +28,6 @@ public class LoginPage {
 
   public LoginPage createNewAccountClick(){
     createNewAccountBtn.click();
-
     return this;
   }
 }

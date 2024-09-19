@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.browser.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Selenide.open;
 
 
+@WebTest
 public class LoginTests {
     private String username;
     private String password;
