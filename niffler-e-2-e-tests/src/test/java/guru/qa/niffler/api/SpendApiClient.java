@@ -5,6 +5,8 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -19,12 +21,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient {
 
-    private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(Config.getInstance().spendUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
+    HttpLoggingInterceptor interceptor;
 
-    private final SpendApi spendApi = retrofit.create(SpendApi.class);
+    private final Retrofit retrofit;
+
+    private final SpendApi spendApi;
+
+    public SpendApiClient() {
+        interceptor  = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+
+        retrofit= new Retrofit.Builder()
+                .baseUrl(Config.getInstance().spendUrl())
+                .addConverterFactory(JacksonConverterFactory.create())
+                .client(client)
+                .build();
+
+        spendApi = retrofit.create(SpendApi.class);
+    }
 
 
     public SpendJson createSpend(SpendJson spend) {

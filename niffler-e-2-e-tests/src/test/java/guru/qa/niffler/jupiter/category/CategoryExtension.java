@@ -15,14 +15,24 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public void beforeEach(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
                 .ifPresent(anno -> {
-                    CategoryJson category = new CategoryJson(
-                            null,
-                            faker.funnyName().toString(),
-                            anno.username(),
-                            anno.archived()
-                    );
+                    String title = anno.title().equals("") ? faker.funnyName().toString() : anno.title();
 
-                    CategoryJson createdCategory = spendApiClient.addCategory(category);
+                    CategoryJson createdCategory = spendApiClient.addCategory(new CategoryJson(
+                            null,
+                            title,
+                            anno.username(),
+                            false
+                    ));
+
+                    if (anno.archived()) {
+                        createdCategory = spendApiClient.editCategory(new CategoryJson(
+                                createdCategory.id(),
+                                createdCategory.name(),
+                                createdCategory.username(),
+                                true
+                        ));
+                    }
+
                     context.getStore(NAMESPACE).put(
                             context.getUniqueId(),
                             createdCategory
@@ -36,7 +46,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public CategoryJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
     }
 
@@ -45,7 +55,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
         CategoryJson category = context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(),
                 CategoryJson.class);
 
-        if(!category.archived()){
+        if (!category.archived()) {
             spendApiClient.editCategory(
                     new CategoryJson(
                             category.id(),
