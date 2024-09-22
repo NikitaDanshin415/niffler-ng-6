@@ -10,23 +10,26 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
+import static guru.qa.niffler.jupiter.usersQueue.UserType.Type.EMPTY;
+
 public class UsersQueueExtension implements
         BeforeEachCallback,
         AfterEachCallback,
         ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-    public record StaticUser(String userName, String password, boolean empty) {
-    }
-
     private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedDeque<>();
-    private static final Queue<StaticUser> NOT_EMPTY_USERS = new ConcurrentLinkedDeque<>();
+    private static final Queue<StaticUser> USER_WITH_FRIEND = new ConcurrentLinkedDeque<>();
+    private static final Queue<StaticUser> USER_WITH_INCOME_REQUEST = new ConcurrentLinkedDeque<>();
+    private static final Queue<StaticUser> USER_WITH_OUTCOME_REQUEST = new ConcurrentLinkedDeque<>();
 
 
     static {
-        EMPTY_USERS.add(new StaticUser("test2", "123", true));
-        NOT_EMPTY_USERS.add(new StaticUser("test", "123", false));
-        NOT_EMPTY_USERS.add(new StaticUser("test3", "123", false));
+        EMPTY_USERS.add(new StaticUser("test2", "123", null, null, null));
+        USER_WITH_FRIEND.add(new StaticUser("test", "123", "test3", null, null));
+        USER_WITH_FRIEND.add(new StaticUser("test5", "123", "test1", null, null));
+        USER_WITH_INCOME_REQUEST.add(new StaticUser("test3", "123", null, "test4", null));
+        USER_WITH_OUTCOME_REQUEST.add(new StaticUser("test4", "123", null, null, "test3"));
     }
 
 
@@ -44,11 +47,24 @@ public class UsersQueueExtension implements
                     Optional<StaticUser> user = Optional.empty();
                     StopWatch sw = StopWatch.createStarted();
 
-                    //Вот тут достаем его из нужной очереди
+                    // Достаем его из нужной очереди
                     while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        user = ut.value()
-                                ? Optional.ofNullable(EMPTY_USERS.poll())
-                                : Optional.ofNullable(NOT_EMPTY_USERS.poll());
+                        switch (ut.value()) {
+                            case EMPTY:
+                                user = Optional.ofNullable(EMPTY_USERS.poll());
+                                break;
+                            case WITH_FRIEND:
+                                user = Optional.ofNullable(USER_WITH_FRIEND.poll());
+                                break;
+                            case WITH_INCOME_REQUEST:
+                                user = Optional.ofNullable(USER_WITH_INCOME_REQUEST.poll());
+                                break;
+                            case WITH_OUTCOME_REQUEST:
+                                user = Optional.ofNullable(USER_WITH_OUTCOME_REQUEST.poll());
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                     //Добавляем время начала теста, чтобы в отчете все отбражалось корректно
@@ -64,10 +80,10 @@ public class UsersQueueExtension implements
                     // Добавляем пользователя в мапу пользователей для теста или создаем эту мапу при первом вхождении цикл
                     user.ifPresentOrElse(
                             u -> {
-                                ((Map<Integer, StaticUser>) context.getStore(NAMESPACE).getOrComputeIfAbsent(
+                                ((Map<Integer, UserQueueRecord>) context.getStore(NAMESPACE).getOrComputeIfAbsent(
                                         context.getUniqueId(),
                                         key -> new HashMap<>()
-                                )).put(parameterIndex, u);
+                                )).put(parameterIndex, new UserQueueRecord(u, ut));
                             },
                             // если какого то пользователя не нашли за 30 сек, то кидаем исключение
                             () -> new IllegalStateException("Can't find user after 30 sec")
@@ -77,13 +93,24 @@ public class UsersQueueExtension implements
 
     @Override
     public void afterEach(ExtensionContext context) throws Exception {
-        Map<Integer, StaticUser> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
+        Map<Integer, UserQueueRecord> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
-        for (Map.Entry<Integer, StaticUser> user : users.entrySet()){
-            if (user.getValue().empty) {
-                EMPTY_USERS.add(user.getValue());
-            } else {
-                NOT_EMPTY_USERS.add(user.getValue());
+        for (Map.Entry<Integer, UserQueueRecord> user : users.entrySet()) {
+            switch (user.getValue().userType.value()) {
+                case EMPTY:
+                    EMPTY_USERS.add(user.getValue().staticUser);
+                    break;
+                case WITH_FRIEND:
+                    USER_WITH_FRIEND.add(user.getValue().staticUser);
+                    break;
+                case WITH_INCOME_REQUEST:
+                    USER_WITH_INCOME_REQUEST.add(user.getValue().staticUser);
+                    break;
+                case WITH_OUTCOME_REQUEST:
+                    USER_WITH_OUTCOME_REQUEST.add(user.getValue().staticUser);
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -96,7 +123,7 @@ public class UsersQueueExtension implements
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Map<Integer, StaticUser> usersMap = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
-        return usersMap.get(parameterContext.getIndex());
+        Map<Integer, UserQueueRecord> usersMap = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
+        return usersMap.get(parameterContext.getIndex()).staticUser;
     }
 }
