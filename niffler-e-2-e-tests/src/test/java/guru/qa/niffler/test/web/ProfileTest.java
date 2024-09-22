@@ -14,18 +14,20 @@ public class ProfileTest {
 
     @Test
     void testWithEmptyUser(
-            @UserType(empty = true) StaticUser user1,
-            @UserType(empty = false) StaticUser user2
+            @UserType(value = true) StaticUser user1,
+            @UserType(value = false) StaticUser user2,
+            @UserType(value = false) StaticUser user3
 
     ) throws InterruptedException {
         Thread.sleep(1000);
-        System.out.println(user1);
-        System.out.println(user2);
+        System.out.println("Пользователь с данными:" + user2);
+        System.out.println("Пользователь с данными:" + user3);
+        System.out.println("Пользователь без данных:" + user1);
     }
 
 
     @Test
-    void testWithEmptyUser1(@UserType(empty = false) StaticUser user) throws InterruptedException {
+    void testWithEmptyUser1(@UserType(value = false) StaticUser user) throws InterruptedException {
         Thread.sleep(1000);
         System.out.println(user);
     }
