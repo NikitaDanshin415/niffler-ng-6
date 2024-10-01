@@ -13,6 +13,8 @@ public class MainPage {
     private final SelenideElement table = $x("//div[@id='spendings']//tbody");
     private final SelenideElement userAvatar = $x("//div[contains(@class,'MuiAvatar-root')]");
     private final SelenideElement profileLink = $x("//a[@href='/profile']");
+    private final SelenideElement allPeopleLink = $x("//a[@href='/people/all']");
+    private final SelenideElement friendsLink = $x("//a[@href='/people/friends']");
     private final ElementsCollection tableRows = table.$$x(".//tr");
 
     public EditSpendingPage editSpending(String spendingDescription) {
@@ -38,6 +40,20 @@ public class MainPage {
     public MainPage openProfilePage(){
         userAvatar.click();
         profileLink.click();
+
+        return this;
+    }
+
+    public MainPage openFriendsList(){
+        userAvatar.click();
+        friendsLink.click();
+
+        return this;
+    }
+
+    public MainPage openAllPeopleList(){
+        userAvatar.click();
+        allPeopleLink.click();
 
         return this;
     }

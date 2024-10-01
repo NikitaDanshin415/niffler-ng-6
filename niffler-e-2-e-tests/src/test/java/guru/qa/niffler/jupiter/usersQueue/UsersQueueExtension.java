@@ -25,9 +25,8 @@ public class UsersQueueExtension implements
 
 
     static {
-        EMPTY_USERS.add(new StaticUser("test2", "123", null, null, null));
         USER_WITH_FRIEND.add(new StaticUser("test", "123", "test3", null, null));
-        USER_WITH_FRIEND.add(new StaticUser("test5", "123", "test1", null, null));
+        EMPTY_USERS.add(new StaticUser("test2", "123", null, null, null));
         USER_WITH_INCOME_REQUEST.add(new StaticUser("test3", "123", null, "test4", null));
         USER_WITH_OUTCOME_REQUEST.add(new StaticUser("test4", "123", null, null, "test3"));
     }

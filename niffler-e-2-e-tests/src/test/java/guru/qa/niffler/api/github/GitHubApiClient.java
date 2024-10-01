@@ -36,7 +36,7 @@ public class GitHubApiClient {
                 .build();
 
         retrofit= new Retrofit.Builder()
-                .baseUrl(Config.getInstance().spendUrl())
+                .baseUrl(Config.getInstance().githubUrl())
                 .addConverterFactory(JacksonConverterFactory.create())
                 .client(client)
                 .build();
