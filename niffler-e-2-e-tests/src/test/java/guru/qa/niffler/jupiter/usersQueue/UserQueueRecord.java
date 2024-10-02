@@ -1,8 +1,5 @@
 package guru.qa.niffler.jupiter.usersQueue;
 
-
-
-
 public class UserQueueRecord {
     public UserType userType;
     public StaticUser staticUser;

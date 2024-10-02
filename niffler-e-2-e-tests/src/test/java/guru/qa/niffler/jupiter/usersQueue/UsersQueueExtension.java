@@ -48,22 +48,8 @@ public class UsersQueueExtension implements
 
                     // Достаем его из нужной очереди
                     while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        switch (ut.value()) {
-                            case EMPTY:
-                                user = Optional.ofNullable(EMPTY_USERS.poll());
-                                break;
-                            case WITH_FRIEND:
-                                user = Optional.ofNullable(USER_WITH_FRIEND.poll());
-                                break;
-                            case WITH_INCOME_REQUEST:
-                                user = Optional.ofNullable(USER_WITH_INCOME_REQUEST.poll());
-                                break;
-                            case WITH_OUTCOME_REQUEST:
-                                user = Optional.ofNullable(USER_WITH_OUTCOME_REQUEST.poll());
-                                break;
-                            default:
-                                break;
-                        }
+                        Queue<StaticUser> queue = getQueue(ut.value());
+                        user = Optional.ofNullable(queue.poll());
                     }
 
                     //Добавляем время начала теста, чтобы в отчете все отбражалось корректно
@@ -91,26 +77,12 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         Map<Integer, UserQueueRecord> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
         for (Map.Entry<Integer, UserQueueRecord> user : users.entrySet()) {
-            switch (user.getValue().userType.value()) {
-                case EMPTY:
-                    EMPTY_USERS.add(user.getValue().staticUser);
-                    break;
-                case WITH_FRIEND:
-                    USER_WITH_FRIEND.add(user.getValue().staticUser);
-                    break;
-                case WITH_INCOME_REQUEST:
-                    USER_WITH_INCOME_REQUEST.add(user.getValue().staticUser);
-                    break;
-                case WITH_OUTCOME_REQUEST:
-                    USER_WITH_OUTCOME_REQUEST.add(user.getValue().staticUser);
-                    break;
-                default:
-                    break;
-            }
+            Queue<StaticUser> queue = getQueue(user.getValue().userType.value());
+            queue.add(user.getValue().staticUser);
         }
     }
 
@@ -124,5 +96,14 @@ public class UsersQueueExtension implements
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         Map<Integer, UserQueueRecord> usersMap = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
         return usersMap.get(parameterContext.getIndex()).staticUser;
+    }
+
+    private Queue<StaticUser> getQueue (UserType.Type type){
+        return switch (type) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> USER_WITH_FRIEND;
+            case WITH_INCOME_REQUEST -> USER_WITH_INCOME_REQUEST;
+            case WITH_OUTCOME_REQUEST -> USER_WITH_OUTCOME_REQUEST;
+        };
     }
 }

@@ -4,6 +4,8 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.CollectionCondition.empty;
 import static com.codeborne.selenide.CollectionCondition.itemWithText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class FriendsPage {
@@ -12,15 +14,16 @@ public class FriendsPage {
 
     public FriendsPage friendTableShouldHaveRow(String username) {
         friendsTable
-                .$$x(".//div[contains(@class,'MuiBox-root')]/p[contains(@class,'MuiTypography-body1')]")
-                .shouldHave(itemWithText(username));
+                .$$x(".//td")
+                .find(text(username))
+                .shouldBe(visible);
 
         return this;
     }
 
     public FriendsPage friendTableShouldBeEmpty() {
         friendsTable
-                .$$x(".//div[contains(@class,'MuiBox-root')]/p[contains(@class,'MuiTypography-body1')]")
+                .$$x(".//td")
                 .shouldBe(empty);
 
         return this;
@@ -28,7 +31,7 @@ public class FriendsPage {
 
     public FriendsPage requestFriendTableShouldHaveRow(String username) {
         friendsRequestTable
-                .$$x(".//div[contains(@class,'MuiBox-root')]/p[contains(@class,'MuiTypography-body1')]")
+                .$$x(".//td")
                 .shouldHave(itemWithText(username));
 
         return this;

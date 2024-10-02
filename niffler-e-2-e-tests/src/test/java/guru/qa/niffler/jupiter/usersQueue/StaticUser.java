@@ -4,10 +4,10 @@ import lombok.Data;
 
 public class StaticUser {
     public String userName;
-    public  String password;
-    public  String friend;
-    public  String income;
-    public  String outcome;
+    public String password;
+    public String friend;
+    public String income;
+    public String outcome;
 
     public StaticUser(String userName, String password, String friend, String income, String outcome) {
         this.userName = userName;
