@@ -3,19 +3,20 @@ package guru.qa.niffler.jupiter.category;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.api.spend.SpendApiClient;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
-    private Faker faker = new Faker();
+
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
                 .ifPresent(anno -> {
-                    String title = anno.title().equals("") ? faker.funnyName().toString() : anno.title();
+                    String title = anno.title().equals("") ? RandomDataUtils.randomCategoryName() : anno.title();
 
                     CategoryJson createdCategory = spendApiClient.addCategory(new CategoryJson(
                             null,

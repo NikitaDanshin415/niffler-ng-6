@@ -1,23 +1,19 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.browser.WebTest;
+import guru.qa.niffler.jupiter.meta.WebTest;
 import guru.qa.niffler.jupiter.usersQueue.StaticUser;
 import guru.qa.niffler.jupiter.usersQueue.UserType;
-import guru.qa.niffler.jupiter.usersQueue.UsersQueueExtension;
 import guru.qa.niffler.page.AllPeoplePage;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Selenide.open;
 import static guru.qa.niffler.jupiter.usersQueue.UserType.Type.*;
-import static io.qameta.allure.Allure.step;
 
 @WebTest
-@ExtendWith(UsersQueueExtension.class)
 public class FriendsTest {
 
     @Test
