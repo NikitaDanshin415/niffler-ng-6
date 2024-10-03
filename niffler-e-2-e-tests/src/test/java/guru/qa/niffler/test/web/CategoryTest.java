@@ -16,7 +16,6 @@ public class CategoryTest {
 
     @Test
     @Category(
-            username = "test",
             archived = true
     )
     public void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
@@ -34,7 +33,6 @@ public class CategoryTest {
 
     @Test
     @Category(
-            username = "test",
             archived = false
     )
     public void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
