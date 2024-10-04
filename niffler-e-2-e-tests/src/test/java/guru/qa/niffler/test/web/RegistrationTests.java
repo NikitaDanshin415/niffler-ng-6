@@ -3,10 +3,11 @@ package guru.qa.niffler.test.web;
 
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.browser.WebTest;
+import guru.qa.niffler.jupiter.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.RegisterPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +21,8 @@ public class RegistrationTests {
 
     @BeforeEach
     void prepareData() {
-        username = new Faker().name().toString();
-        password = "12345";
+        username = RandomDataUtils.randomName();
+        password = "123";
     }
 
     @Test

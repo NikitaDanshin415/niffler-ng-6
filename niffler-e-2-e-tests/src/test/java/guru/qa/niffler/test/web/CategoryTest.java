@@ -1,8 +1,8 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.browser.WebTest;
 import guru.qa.niffler.jupiter.category.Category;
+import guru.qa.niffler.jupiter.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
@@ -16,7 +16,6 @@ public class CategoryTest {
 
     @Test
     @Category(
-            username = "test",
             archived = true
     )
     public void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){
@@ -34,7 +33,6 @@ public class CategoryTest {
 
     @Test
     @Category(
-            username = "test",
             archived = false
     )
     public void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson){

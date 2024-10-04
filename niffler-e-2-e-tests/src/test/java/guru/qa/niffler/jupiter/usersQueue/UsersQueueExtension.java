@@ -37,7 +37,7 @@ public class UsersQueueExtension implements
         Arrays.stream(context.getRequiredTestMethod().getParameters())
 
                 //Получаем только те параметры, которые отмеченны аннотацией
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 //Каждый параметр приводим к типу UserType
 
                 //Достаем нужного пользователя, в соответствии каждому параметру
@@ -80,9 +80,11 @@ public class UsersQueueExtension implements
     public void afterEach(ExtensionContext context) {
         Map<Integer, UserQueueRecord> users = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
-        for (Map.Entry<Integer, UserQueueRecord> user : users.entrySet()) {
-            Queue<StaticUser> queue = getQueue(user.getValue().userType.value());
-            queue.add(user.getValue().staticUser);
+        if (!Objects.isNull(users)) {
+            for (Map.Entry<Integer, UserQueueRecord> user : users.entrySet()) {
+                Queue<StaticUser> queue = getQueue(user.getValue().userType.value());
+                queue.add(user.getValue().staticUser);
+            }
         }
     }
 
@@ -98,7 +100,7 @@ public class UsersQueueExtension implements
         return usersMap.get(parameterContext.getIndex()).staticUser;
     }
 
-    private Queue<StaticUser> getQueue (UserType.Type type){
+    private Queue<StaticUser> getQueue(UserType.Type type) {
         return switch (type) {
             case EMPTY -> EMPTY_USERS;
             case WITH_FRIEND -> USER_WITH_FRIEND;

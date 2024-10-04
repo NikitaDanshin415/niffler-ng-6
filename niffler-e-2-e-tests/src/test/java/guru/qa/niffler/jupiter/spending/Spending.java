@@ -9,9 +9,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith(CreateSpendingExtension.class)
+@ExtendWith(SpendingExtension.class)
 public @interface Spending {
-  String username();
   String category();
   String description();
   double amount();
