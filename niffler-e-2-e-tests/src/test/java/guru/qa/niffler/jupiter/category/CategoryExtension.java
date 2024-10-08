@@ -2,8 +2,12 @@ package guru.qa.niffler.jupiter.category;
 
 import com.github.javafaker.Faker;
 import guru.qa.niffler.api.spend.SpendApiClient;
+import guru.qa.niffler.data.dao.CategoryDao;
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.impl.CategoryDaoJdbc;
 import guru.qa.niffler.jupiter.user.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -13,7 +17,7 @@ import java.util.Objects;
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
     private final SpendApiClient spendApiClient = new SpendApiClient();
-
+    private final SpendDbClient spendDbClient = new SpendDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -23,7 +27,8 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                         Category category = anno.categories()[0];
                         String title = category.title().isEmpty() ? RandomDataUtils.randomCategoryName() : category.title();
 
-                        CategoryJson createdCategory = spendApiClient.addCategory(new CategoryJson(
+
+                        CategoryJson createdCategory = spendDbClient.createCategory(new CategoryJson(
                                 null,
                                 title,
                                 anno.username(),
