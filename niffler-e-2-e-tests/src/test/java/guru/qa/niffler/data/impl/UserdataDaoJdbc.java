@@ -61,13 +61,13 @@ public class UserdataDaoJdbc implements UserdataDAO {
                 try (ResultSet rs = ps.getResultSet()) {
                     if (rs.next()) {
                         UserEntity userEntity = new UserEntity();
-                        userEntity.setUsername(rs.getObject("username", String.class));
+                        userEntity.setUsername(rs.getString("username"));
                         userEntity.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                        userEntity.setFirstname(rs.getObject("firstname", String.class));
-                        userEntity.setSurname(rs.getObject("surname", String.class));
-                        userEntity.setPhoto(rs.getObject("photo", byte[].class));
-                        userEntity.setPhotoSmall(rs.getObject("photo_small", byte[].class));
-                        userEntity.setFullname(rs.getObject("full_name", String.class));
+                        userEntity.setFirstname(rs.getString("firstname"));
+                        userEntity.setSurname(rs.getString("surname"));
+                        userEntity.setPhoto(rs.getBytes("photo"));
+                        userEntity.setPhotoSmall(rs.getBytes("photo_small"));
+                        userEntity.setFullname(rs.getString("full_name"));
 
                         return Optional.of(userEntity);
                     } else {
@@ -92,13 +92,13 @@ public class UserdataDaoJdbc implements UserdataDAO {
                 try (ResultSet rs = ps.getResultSet()) {
                     if (rs.next()) {
                         UserEntity userEntity = new UserEntity();
-                        userEntity.setUsername(rs.getObject("username", String.class));
+                        userEntity.setUsername(rs.getString("username"));
                         userEntity.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                        userEntity.setFirstname(rs.getObject("firstname", String.class));
-                        userEntity.setSurname(rs.getObject("surname", String.class));
-                        userEntity.setPhoto(rs.getObject("photo", byte[].class));
-                        userEntity.setPhotoSmall(rs.getObject("photo_small", byte[].class));
-                        userEntity.setFullname(rs.getObject("full_name", String.class));
+                        userEntity.setFirstname(rs.getString("firstname"));
+                        userEntity.setSurname(rs.getString("surname"));
+                        userEntity.setPhoto(rs.getBytes("photo"));
+                        userEntity.setPhotoSmall(rs.getBytes("photo_small"));
+                        userEntity.setFullname(rs.getString("full_name"));
 
                         return Optional.of(userEntity);
                     } else {

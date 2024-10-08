@@ -10,6 +10,8 @@ public interface SpendDao {
     SpendEntity create(SpendEntity spend);
 
     Optional<SpendEntity> findSpendById(UUID id);
+
     List<SpendEntity> findAllByUsername(String username);
+
     void deleteSpend(SpendEntity spend);
 }

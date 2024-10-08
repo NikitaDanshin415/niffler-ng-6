@@ -87,8 +87,8 @@ public class CategoryDaoJdbc implements CategoryDao {
                     if (rs.next()) {
                         CategoryEntity ce = new CategoryEntity();
                         ce.setId(rs.getObject("id", UUID.class));
-                        ce.setUsername(rs.getString("name"));
-                        ce.setName(rs.getString("username"));
+                        ce.setUsername(rs.getString("username"));
+                        ce.setName(rs.getString("name"));
                         ce.setArchived(rs.getBoolean("archived"));
 
                         return Optional.of(ce);
@@ -116,8 +116,8 @@ public class CategoryDaoJdbc implements CategoryDao {
                     while (rs.next()) {
                         CategoryEntity ce = new CategoryEntity();
                         ce.setId(rs.getObject("id", UUID.class));
-                        ce.setUsername(rs.getString("name"));
-                        ce.setName(rs.getString("username"));
+                        ce.setUsername(rs.getString("username"));
+                        ce.setName(rs.getString("name"));
                         ce.setArchived(rs.getBoolean("archived"));
                         resultList.add(ce);
                     }

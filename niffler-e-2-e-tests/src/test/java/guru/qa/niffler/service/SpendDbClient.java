@@ -33,6 +33,11 @@ public class SpendDbClient {
         return CategoryJson.fromEntity(categoryDao.create(categoryEntity));
     }
 
+    public void deleteCategory(CategoryJson category) {
+        CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
+        categoryDao.deleteCategory(categoryEntity);
+    }
+
     public Optional<CategoryJson> getCategoryByUsernameAndName(String username, String name) {
         Optional<CategoryEntity> category = categoryDao.findCategoryByUsernameAndCategoryName(username, name);
         return category.map(CategoryJson::fromEntity);
