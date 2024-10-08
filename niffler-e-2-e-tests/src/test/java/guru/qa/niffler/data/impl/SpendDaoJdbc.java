@@ -109,24 +109,22 @@ public class SpendDaoJdbc implements SpendDao {
         }
     }
 
-    private SpendEntity fillSpendEntity(ResultSet rs) {
+    private SpendEntity fillSpendEntity(ResultSet rs) throws SQLException {
         SpendEntity se = new SpendEntity();
         CategoryDaoJdbc categoryDaoJdbc = new CategoryDaoJdbc();
-        try {
-            se.setId(rs.getObject("id", UUID.class));
-            se.setUsername(rs.getString("username"));
-            se.setSpendDate(rs.getDate("spend_date"));
-            se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-            se.setAmount(rs.getDouble("amount"));
-            se.setDescription(rs.getString("description"));
 
-            UUID categoryId = UUID.fromString(rs.getString("category_id"));
-            Optional<CategoryEntity> ce;
-            ce = categoryDaoJdbc.findCategoryById(categoryId);
-            ce.ifPresent(se::setCategory);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        se.setId(rs.getObject("id", UUID.class));
+        se.setUsername(rs.getString("username"));
+        se.setSpendDate(rs.getDate("spend_date"));
+        se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+        se.setAmount(rs.getDouble("amount"));
+        se.setDescription(rs.getString("description"));
+
+        UUID categoryId = UUID.fromString(rs.getString("category_id"));
+        Optional<CategoryEntity> ce;
+        ce = categoryDaoJdbc.findCategoryById(categoryId);
+        ce.ifPresent(se::setCategory);
+
         return se;
     }
 }

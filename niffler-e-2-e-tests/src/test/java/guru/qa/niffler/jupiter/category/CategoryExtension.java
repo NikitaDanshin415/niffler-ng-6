@@ -16,7 +16,6 @@ import java.util.Objects;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-    private final SpendApiClient spendApiClient = new SpendApiClient();
     private final SpendDbClient spendDbClient = new SpendDbClient();
 
     @Override
@@ -27,22 +26,12 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                         Category category = anno.categories()[0];
                         String title = category.title().isEmpty() ? RandomDataUtils.randomCategoryName() : category.title();
 
-
                         CategoryJson createdCategory = spendDbClient.createCategory(new CategoryJson(
                                 null,
                                 title,
                                 anno.username(),
-                                false
+                                category.archived()
                         ));
-
-                        if (category.archived()) {
-                            createdCategory = spendApiClient.editCategory(new CategoryJson(
-                                    createdCategory.id(),
-                                    createdCategory.name(),
-                                    createdCategory.username(),
-                                    true
-                            ));
-                        }
 
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
@@ -68,16 +57,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 CategoryJson.class);
 
         if (!Objects.isNull(category)) {
-            if (!category.archived()) {
-                spendApiClient.editCategory(
-                        new CategoryJson(
-                                category.id(),
-                                category.name(),
-                                category.username(),
-                                true
-                        )
-                );
-            }
+            spendDbClient.deleteCategory(category);
         }
     }
 }
